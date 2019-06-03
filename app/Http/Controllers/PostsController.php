@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PostsController extends Controller
 {
@@ -14,9 +15,9 @@ class PostsController extends Controller
     public function index()
     {
         //
+        $posts = DB::select('select * from posts order by id DESC');
         $data = [
-            'name'=>'dong',
-            'age'=>'25'
+            'posts'=> $posts,
         ];
         return view('posts.index',$data);
     }
@@ -41,6 +42,12 @@ class PostsController extends Controller
     public function store(Request $request)
     {
         //
+        $att['title']   = $request->input('title');
+        $att['content'] = $request->input('content');
+        $att['user_id'] = auth()->user()->id;
+        $att['views']   = 0;
+        DB::insert('insert into posts (title, content,user_id, views) values (?, ?, ?, ?)', [$att['title'], $att['content'],$att['user_id'], $att['views']]);
+        return redirect()->route('posts.index');
     }
 
     /**

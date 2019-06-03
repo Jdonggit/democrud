@@ -11,6 +11,22 @@
 |
 */
 
+#登入
+Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+Route::post('login', 'Auth\LoginController@login');
+#登出
+Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+
+#註冊
+Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+Route::post('register', 'Auth\RegisterController@register')->name('register.post');
+
+#忘記密碼
+Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
+Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
+Route::post('password/reset', 'Auth\ResetPasswordController@reset');
+
 // Route::get('/', function () {
 //     return view('welcome');
 // });
@@ -32,3 +48,6 @@ Route::get('posts/{id}/edit','PostsController@edit')->name('posts.edit');
 Route::patch('posts/{id}','PostsController@update')->name('posts.update');
 //刪除訊息
 Route::delete('posts/{id}','PostController@destory')->name('posts.destory');
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
