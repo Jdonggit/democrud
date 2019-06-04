@@ -34,20 +34,35 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 Route::get('/', function () {
     return view('index');
 })->name('index');
+
+
+
 //顯示最新訊息
 Route::get('posts','PostsController@index')->name('posts.index');
-//新增訊息
-Route::get('posts/create','PostsController@create')->name('posts.create');
-//儲存訊息
-Route::post('posts/store','PostsController@store')->name('posts.store');
 //秀出指定訊息
-Route::get('posts/{id}','PostsController@show')->name('posts.show');
-//修改指定訊息
-Route::get('posts/{id}/edit','PostsController@edit')->name('posts.edit');
-//確定修改訊息
-Route::patch('posts/{id}','PostsController@update')->name('posts.update');
-//刪除訊息
-Route::delete('posts/{id}','PostController@destory')->name('posts.destory');
+Route::get('posts/{post}/show','PostsController@show')->where('post','[0-9]+')->name('posts.show');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+//註冊會員可用
+Route::group(['middleware' => 'auth'],function(){
+    Route::get('inside', function () {
+        return view('inside');
+    })->name('inside');
+});
+
+//管理者可用
+Route::group(['middleware' => 'auth'],function(){
+    //新增訊息
+    Route::get('posts/create','PostsController@create')->name('posts.create');
+    //修改指定訊息
+    Route::get('posts/{post}/edit','PostsController@edit')->name('posts.edit');
+    //確定修改訊息
+    Route::patch('posts/{post}/update','PostsController@update')->name('posts.update');
+    //刪除訊息
+    Route::delete('posts/{post}/destroy','PostsController@destroy')->name('posts.destroy');
+    //儲存訊息
+    Route::post('posts/store','PostsController@store')->name('posts.store');
+});

@@ -11,6 +11,11 @@
       <li class="nav-item">
         <a class="nav-link" href="{{ route('posts.index') }}">最新公告</a>
       </li>
+      @auth
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('inside') }}">祕密花園</a>
+      </li>
+      @endauth
     </ul>
     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->

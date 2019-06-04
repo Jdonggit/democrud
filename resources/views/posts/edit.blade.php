@@ -7,30 +7,16 @@
             <a href="{{ route('posts.index') }}" class="btn btn-secondary btn-small">返回</a>
         </div>
         <div class="col-12">
-
-        @if ($errors->any())
-    <div class="alert alert-danger alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <strong>警告！</strong> 請修正以下表單錯誤：
-        <ul>
-            @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-    @endif
-
-        <form method="post" action="{{ route('posts.store') }}">
+        <form method="post" action="{{ route('posts.update',$post->id) }}">
             @csrf
+            {{ method_field('PATCH') }}
             <div class="form-group">
                 <label for="title">標題</label>
-                <input type="text" class="form-control" name="title" id="title" value="{{ old('title') }}" >
+                <input type="text" class="form-control" name="title" id="title" value="{{ $post->title }}">
             </div>
             <div class="form-group">
                 <label for="content">內容</label>
-                <textarea name="content" id="content" class="form-control" >{{ old('content') }}</textarea>
+                <textarea name="content" id="content" class="form-control">{{ $post->content }}</textarea>
             </div>
             <div class="form-group">
                 <label for="files">附件</label>
