@@ -54,7 +54,21 @@ class PostsController extends Controller
         //$att['updated_at']   = now();
         // DB::insert('insert into posts (title, content, user_id, views, created_at, updated_at) values (?, ?, ?, ?, ?, ?)', [$att['title'], $att['content'], $att['user_id'], $att['views'],$att['created_at'], $att['updated_at']]);
        
-        Post::create($att);
+        $post = Post::create($att);
+
+        //處理檔案上傳
+        if ($request->hasFile('files')) {
+            $files = $request->file('files');
+            foreach($files as $file){
+                $info = [
+                    'mime-type' => $file->getMimeType(),
+                    'original_filename' => $file->getClientOriginalName(),
+                    'extension' => $file->getClientOriginalExtension(),
+                    'size' => $file->getClientSize(),
+                ];
+                $file->storeAs('public/posts/'.$post->id, $info['original_filename']);
+            }
+        }
 
         return redirect()->route('posts.index');
     }
@@ -69,9 +83,18 @@ class PostsController extends Controller
     {
         //
         // $post = DB::select('select * from posts where id=?',[$id]);
+        $post_key = 'post'.$post->id;
+        if(session($post_key)!=1){
+            $att['views'] = $post->views+1;
+            $post->update($att);
+        }
+        session([$post_key=>'1']);
+
+        $files = get_files(storage_path('app/public/posts/'.$post->id));
         
         $data = [
             'post'=> $post,
+            'files'=>$files,
         ];
         return view('posts.show',$data);
     }
@@ -109,6 +132,20 @@ class PostsController extends Controller
         $att['content'] = $request->input('content');
         // $post = DB::update('update posts set title = ? , content = ? where id = ?', [$att['title'],$att['content'],$id]);
         $post->update($att);
+
+         //處理檔案上傳
+         if ($request->hasFile('files')) {
+            $files = $request->file('files');
+            foreach($files as $file){
+                $info = [
+                    'mime-type' => $file->getMimeType(),
+                    'original_filename' => $file->getClientOriginalName(),
+                    'extension' => $file->getClientOriginalExtension(),
+                    'size' => $file->getClientSize(),
+                ];
+                $file->storeAs('public/posts/'.$post->id, $info['original_filename']);
+            }
+        }
         return redirect()->route('posts.index');
     }
 
@@ -126,4 +163,10 @@ class PostsController extends Controller
         return redirect()->route('posts.index');
 
     }
+    public function download($id,$filename)
+    {
+        $file = storage_path('app/public/posts/'.$id."/".$filename);
+        return response()->download($file);
+    }
+
 }

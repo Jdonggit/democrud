@@ -41,6 +41,8 @@ Route::get('/', function () {
 Route::get('posts','PostsController@index')->name('posts.index');
 //秀出指定訊息
 Route::get('posts/{post}/show','PostsController@show')->where('post','[0-9]+')->name('posts.show');
+//下載附件
+Route::get('download/{id}/{filename}','PostsController@download')->name('posts.download');
 
 Auth::routes();
 

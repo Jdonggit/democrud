@@ -16,11 +16,17 @@
         </div>
         <div class="col-12">
            <div class="card">
-            <div class="card-header">
-            </div>
-            <div class="card-body">
-            {{ $post->content }}
-            </div>
+                <div class="card-header">
+                </div>
+                <div class="card-body">
+                {{ $post->content }}
+                </div>
+                <div class="card-footer">
+                附件:
+                @foreach($files as $file)
+                    <a href="{{ route('posts.download', ['id' => $post->id,'filename'=>$file]) }}">{{ $file }}<br>
+                @endforeach
+                </div>
            </div>
         </div>
     </div>
